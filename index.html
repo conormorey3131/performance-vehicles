@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-IE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#141613">
+  <title>Performance Vehicles | A passion for the exceptional</title>
+  <meta name="description" content="Explore the Performance Vehicles collection. Performance, prestige and selected automotive photography. Start a conversation about your next car.">
+  <meta property="og:title" content="Performance Vehicles | A passion for the exceptional">
+  <meta property="og:description" content="A considered collection. An extraordinary drive. Discover Performance Vehicles.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://conormorey3131.github.io/performance-vehicles">
+  <meta property="og:image" content="https://conormorey3131.github.io/performance-vehicles/assets/hero.jpg">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="inventory.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#collection">Skip to the cars</a>
+  <header class="site-header" id="site-header">
+    <a href="#" class="brand" aria-label="Performance Vehicles home">
+      <span class="brand-mark" aria-hidden="true">P<span>V</span></span>
+      <span class="brand-name">PERFORMANCE<span>VEHICLES</span></span>
+    </a>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="main-nav"><span></span><span></span></button>
+    <nav id="main-nav" class="main-nav" aria-label="Main navigation">
+      <a href="#collection">The collection</a>
+      <a href="#our-approach">Our approach</a>
+      <a href="#journal">Through the lens</a>
+    </nav>
+    <div class="header-actions">
+      <button class="saved-button" id="saved-filter" aria-label="Show saved cars"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 3h10v18l-5-3-5 3z"/></svg><span id="saved-count">0</span></button>
+      <button class="header-contact" data-enquiry>Let’s talk <span aria-hidden="true">↗</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-image" src="assets/hero.jpg" alt="Lamborghini Aventador SVJ 63 with gold wheels, photographed in Ireland" fetchpriority="high">
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <p class="eyebrow hero-eyebrow"><span></span> PERFORMANCEVEHICLES.IE</p>
+        <h1 id="hero-title">A passion for<br>the <em>exceptional.</em></h1>
+        <p class="hero-description">For the cars that make you look back.<br>And the drives you look forward to.</p>
+        <a href="#collection" class="button button-light">Explore the collection <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="hero-bottom">
+        <a href="#collection" class="hero-scroll"><span class="scroll-line"></span> DISCOVER MORE</a>
+        <div class="hero-caption"><span>IN THE FRAME</span><strong id="hero-car-name">Lamborghini Aventador SVJ 63</strong><span class="hero-photo-credit">PHOTO: TRISTIN MCDONNELL / ELITE CARS IRELAND</span></div>
+      </div>
+      <span class="hero-index" aria-hidden="true">01 — COLLECTION</span>
+    </section>
+
+    <div class="marque-strip" aria-label="Featured marques"><span>PORSCHE</span><span class="marque-ferrari">Ferrari</span><span>McLAREN</span><span class="marque-lamborghini">LAMBORGHINI</span><span>NISSAN</span><span>MITSUBISHI</span></div>
+
+    <section class="collection section-wrap" id="collection" aria-labelledby="collection-heading">
+      <div class="section-topline"><p class="eyebrow"><span class="section-number">01 /</span> THE COLLECTION</p><span class="section-side-note">EXTRAORDINARY BY NATURE</span></div>
+      <div class="section-heading-row"><h2 id="collection-heading">Find your<br><em>next obsession.</em></h2><p>A closer look at some truly special machines.<br>Explore the collection and start a conversation.</p></div>
+      <form id="stock-search" class="stock-search" aria-label="Search the collection">
+        <label>MAKE<select id="make-filter" name="make"><option value="">All marques</option></select></label>
+        <label>BODY STYLE<select id="body-filter" name="body"><option value="">All body styles</option></select></label>
+        <label class="keyword-label">MODEL<input id="keyword-filter" name="model" type="search" placeholder="What are you looking for?"></label>
+        <button type="submit" class="search-button">Find a car <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
+      </form>
+      <div class="catalogue-toolbar"><div><span id="result-count" role="status" aria-live="polite">Explore the collection</span><button id="reset-filters" type="button">Reset filters</button></div><label class="sort-label">Sort by <select id="sort-filter"><option value="featured">Featured</option><option value="make">Make A–Z</option></select></label></div>
+      <div class="vehicle-grid" id="vehicle-grid"></div>
+      <div class="collection-bottom"><p><span class="tiny-dot"></span> Photography showcase · Please enquire to confirm availability and specification.</p><button id="view-all" class="text-link">View the full collection <span aria-hidden="true">↗</span></button></div>
+    </section>
+
+    <section class="approach" id="our-approach" aria-labelledby="approach-heading">
+      <div class="approach-image-wrap"><img src="assets/senna-user-interior.jpg" alt="A closer look at the design of a performance car" loading="lazy"><span class="image-annotation">DRIVEN BY SOMETHING MORE.</span></div>
+      <div class="approach-copy"><p class="eyebrow"><span class="section-number">02 /</span> THE PERFORMANCE VEHICLES APPROACH</p><h2 id="approach-heading">More than a car.<br><em>A feeling.</em></h2><p>That first glimpse. The shape of a wheel arch. The sound that makes everything else fall quiet.</p><p>We’re building Performance Vehicles around a simple idea: finding your next car should feel as special as driving it. Tell us what moves you. Let’s take it from there.</p><button data-enquiry class="text-link light-link">Start a conversation <span aria-hidden="true">↗</span></button><div class="approach-signature">Performance Vehicles<span>FOR THE LOVE OF THE DRIVE.</span></div></div>
+    </section>
+
+    <section class="steps section-wrap" aria-label="Your next car">
+      <div class="step"><span>01</span><div><h3>Discover the details.</h3><p>Take your time. Explore the photographs and save the cars that catch your eye.</p></div></div>
+      <div class="step"><span>02</span><div><h3>Make it personal.</h3><p>A particular model in mind? Tell us what you’re looking for and what matters to you.</p></div></div>
+      <div class="step"><span>03</span><div><h3>Start the conversation.</h3><p>Ask about availability, specifications and the next step towards your next car.</p></div></div>
+    </section>
+
+    <section class="journal section-wrap" id="journal" aria-labelledby="journal-heading">
+      <div class="section-topline"><p class="eyebrow"><span class="section-number">03 /</span> THROUGH THE LENS</p><span class="section-side-note">SELECTED AUTOMOTIVE PHOTOGRAPHY</span></div>
+      <div class="section-heading-row"><h2 id="journal-heading">Built to be driven.<br><em>Impossible to ignore.</em></h2><p>Real cars. A different perspective.<br>Performance Vehicles collection.</p></div>
+      <div class="journal-grid" id="journal-grid"><a href="#collection" class="journal-item"><img src="assets/porsche-gt3rs-wheel.jpg" alt="Porsche GT3 RS wheel and brake detail" loading="lazy"><span>Every angle. Every detail. <b aria-hidden="true">↗</b></span></a><a href="#collection" class="journal-item"><img src="assets/senna-user-rear.jpg" alt="McLaren Senna rear wing and bodywork" loading="lazy"><span>A different perspective. <b aria-hidden="true">↗</b></span></a><a href="#collection" class="journal-item"><img src="assets/ferrari-488-interior.jpg" alt="Ferrari 488 Pista steering wheel and interior" loading="lazy"><span>In the driver’s seat. <b aria-hidden="true">↗</b></span></a><a href="#collection" class="journal-item"><img src="assets/aventador-cannonball-2.jpg" alt="Lamborghini SVJ 63 photographed by Fk Media" loading="lazy"><span>Made for the open road. <b aria-hidden="true">↗</b></span></a></div>
+    </section>
+
+    <section class="contact section-wrap" id="contact" aria-labelledby="contact-heading"><div><p class="eyebrow">YOUR NEXT CHAPTER</p><h2 id="contact-heading">Something special<br><em>starts here.</em></h2></div><div class="contact-action"><p>Found something you love?<br>Or have something specific in mind?</p><div class="contact-details"><a href="mailto:sales@performancevehicles.ie">sales@performancevehicles.ie</a><span>+353 (0)00 000 0000</span></div><button data-enquiry class="button button-light">Let’s find your next car <span aria-hidden="true">↗</span></button><p class="placeholder-note">Sample contact details · Real email and phone number to be added.</p></div></section>
+  </main>
+
+  <footer class="site-footer section-wrap"><div class="footer-top"><a href="#" class="brand footer-brand"><span class="brand-mark" aria-hidden="true">P<span>V</span></span><span class="brand-name">PERFORMANCE<span>VEHICLES</span></span></a><p>A passion for the exceptional.</p><button data-enquiry class="footer-email">Get in touch ↗</button></div><div class="footer-bottom"><p>© 2026 Performance Vehicles. All rights reserved.</p><span>PERFORMANCEVEHICLES.IE</span><a href="#" class="back-top">Back to top ↑</a></div></footer>
+
+  <dialog class="vehicle-dialog" id="vehicle-dialog" aria-label="Vehicle details"><button class="dialog-close" id="close-detail" aria-label="Close vehicle details">×</button><div id="vehicle-detail"></div></dialog>
+  <dialog class="enquiry-dialog" id="enquiry-dialog" aria-labelledby="enquiry-heading"><button class="dialog-close" id="close-enquiry" aria-label="Close enquiry">×</button><p class="eyebrow">LET’S TALK CARS</p><h2 id="enquiry-heading">Your next<br><em>great drive.</em></h2><p class="enquiry-intro">Tell us what you have in mind. Copy your enquiry or open it in your email app.</p><form id="enquiry-form"><label>Your name<input id="enquiry-name" type="text" placeholder="First name" autocomplete="given-name" maxlength="100"></label><label>I’m interested in<select id="enquiry-car"><option value="">Finding my next car</option></select></label><label>Anything you’d like us to know?<textarea id="enquiry-message" rows="3" placeholder="A particular model, a question, your ideal next car…" maxlength="2000"></textarea></label><div class="enquiry-preview-wrap"><span class="eyebrow">YOUR MESSAGE</span><p id="enquiry-preview"></p></div><button type="button" id="copy-enquiry" class="button button-dark">Copy my enquiry <span aria-hidden="true">⧉</span></button><p id="copy-status" class="copy-status" aria-live="polite"></p><a id="email-enquiry" href="mailto:sales@performancevehicles.ie" class="text-link">Open email draft <span aria-hidden="true">↗</span></a></form><p class="enquiry-privacy">Demo contact: sales@performancevehicles.ie · +353 (0)00 000 0000. These are placeholders. Your message stays in this browser until you choose to send it from your email app.</p></dialog>
+</body>
+</html>
