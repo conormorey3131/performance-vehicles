@@ -1,1 +1,10 @@
 .DS_Store
+
+# Generated deployment artifacts and local credentials
+dist-public/
+cloudflare-admin/public/
+cloudflare-admin/lib/
+cloudflare-admin/.wrangler/
+cloudflare-admin/node_modules/
+cloudflare-admin/.dev.vars
+cloudflare-admin/.env*

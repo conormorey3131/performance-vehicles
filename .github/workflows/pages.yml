@@ -1,0 +1,51 @@
+name: Publish public showroom
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Verify public artifact isolation
+        run: node --test scripts/build-public-site.test.mjs
+      - name: Prepare only public showroom files
+        run: node scripts/build-public-site.mjs
+      - name: Upload public artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist-public
+
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy public showroom
+        id: deployment
+        uses: actions/deploy-pages@v4
