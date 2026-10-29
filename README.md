@@ -6,7 +6,7 @@ Website design preview for Performance Vehicles.
 - Stock management: https://conormorey3131.github.io/performance-vehicles/admin.html
 - Location: Railway Road, Kilmallock, Co. Limerick, V35 TH92, Ireland.
 
-The public site includes the vehicle collection, search filters, saved favourites, prices when supplied, and a dark photo viewer with swipe navigation, thumbnails, zoom and slideshow controls. Sales email and phone remain placeholders.
+The public site includes the vehicle collection, search filters, saved favourites, prices when supplied, and a dark photo viewer with swipe navigation, thumbnails, zoom and slideshow controls. The sales email remains a placeholder.
 
 ## Manage cars
 
