@@ -15,7 +15,7 @@
     const detailDialog = $('vehicle-dialog');
     const enquiryDialog = $('enquiry-dialog');
     const enquiryCar = $('enquiry-car');
-    const placeholderEmail = 'sales@performancevehicles.ie';
+    const salesEmail = 'sales@performancevehicles.ie';
     let saved = new Set();
     let savedOnly = false;
     let selectedVehicle = null;
@@ -614,7 +614,7 @@
       const emailLink = $('email-enquiry');
       const vehicle = byId.get(enquiryCar?.value || '');
       const subject = vehicle ? `Vehicle enquiry: ${fullName(vehicle)}` : 'Vehicle enquiry';
-      if (emailLink) emailLink.href = `mailto:${placeholderEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(enquiryText())}`;
+      if (emailLink) emailLink.href = `mailto:${salesEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(enquiryText())}`;
       const status = $('copy-status');
       if (status) status.textContent = '';
       const button = $('copy-enquiry');
@@ -646,7 +646,7 @@
       try {
         await navigator.clipboard.writeText(enquiryText());
         $('copy-enquiry').textContent = 'Enquiry copied';
-        if (status) status.textContent = 'Copied. You can paste your enquiry into an email. The contact address is a placeholder for now.';
+        if (status) status.textContent = 'Copied. You can paste your enquiry into an email to sales@performancevehicles.ie.';
       } catch (_) {
         if (status) status.textContent = 'Please select and copy the enquiry text below, then paste it into your email.';
         const preview = $('enquiry-preview');

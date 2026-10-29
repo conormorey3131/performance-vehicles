@@ -2,11 +2,11 @@
 
 Website design preview for Performance Vehicles.
 
-- Website: https://conormorey3131.github.io/performance-vehicles/
+- Website: https://performancevehicles.ie/
 - Stock management: https://conormorey3131.github.io/performance-vehicles/admin.html
 - Location: Railway Road, Kilmallock, Co. Limerick, V35 TH92, Ireland.
 
-The public site includes the vehicle collection, search filters, saved favourites, prices when supplied, and a dark photo viewer with swipe navigation, thumbnails, zoom and slideshow controls. The sales email remains a placeholder.
+The public site includes the vehicle collection, search filters, saved favourites, prices when supplied, and a dark photo viewer with swipe navigation, thumbnails, zoom and slideshow controls. Sales enquiries use sales@performancevehicles.ie.
 
 ## Manage cars
 
@@ -18,7 +18,7 @@ Publishing requires a GitHub account with write access to this repository and a 
 
 Existing showcase vehicles have no invented prices or specifications. New listings start as drafts. Enter and confirm the actual details before marking a car available. Draft cars are hidden from visitors; reserved and sold cars are labelled.
 
-Concurrent stock changes are checked before publishing; a conflicting update requires reloading published stock. Uploaded images are optimised for the website. The website remains a review preview; connect performancevehicles.ie to production hosting before launch.
+Concurrent stock changes are checked before publishing; a conflicting update requires reloading published stock. Uploaded images are optimised for the website. The public website uses performancevehicles.ie.
 
 ## Files
 
