@@ -10,6 +10,8 @@ The public site includes the vehicle collection, search filters, saved favourite
 
 ## Manage cars
 
+The public website does not link to stock management. Bookmark the admin address above. GitHub Pages serves the admin page publicly; authentication protects publishing, not viewing the page. The admin uses a GitHub publishing key rather than a separate website password.
+
 Open **Stock management** to add a car, enter its description and euro price, upload and order photos, choose its cover and set its status. Drafts are stored on the current device. **Publish changes** saves the stock and new images to this repository; GitHub Pages then rebuilds the shared website.
 
 Publishing requires a GitHub account with write access to this repository and a fine-grained personal access token restricted to **performance-vehicles**, with **Contents: Read and write**. The admin page links to GitHub's key-creation screen and explains these steps. The key is held in memory for the session and is never included in repository files or browser storage.
