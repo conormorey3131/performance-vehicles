@@ -8,3 +8,4 @@ cloudflare-admin/.wrangler/
 cloudflare-admin/node_modules/
 cloudflare-admin/.dev.vars
 cloudflare-admin/.env*
+worker-build-check/
