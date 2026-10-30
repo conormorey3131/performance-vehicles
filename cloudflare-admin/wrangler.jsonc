@@ -1,16 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "performance-vehicles-admin",
-  "main": "worker.mjs",
+  "main": "dist/worker.js",
   "compatibility_date": "2026-10-30",
   "workers_dev": false,
   "preview_urls": false,
-  "assets": {
-    "directory": "./public",
-    "binding": "ASSETS",
-    "run_worker_first": true,
-    "not_found_handling": "none"
-  },
+  "no_bundle": true,
+  "build": { "command": "npm run build" },
   "vars": {
     "ADMIN_EMAILS": "conor@moreydigital.ie",
     "PUBLIC_SITE_URL": "https://performancevehicles.ie"

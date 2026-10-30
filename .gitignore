@@ -4,6 +4,7 @@
 dist-public/
 cloudflare-admin/public/
 cloudflare-admin/lib/
+cloudflare-admin/dist/
 cloudflare-admin/.wrangler/
 cloudflare-admin/node_modules/
 cloudflare-admin/.dev.vars
