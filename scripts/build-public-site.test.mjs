@@ -55,3 +55,11 @@ test('unexpected non-image assets fail closed rather than being published', asyn
   await writeFile(join(root, 'assets', 'publishing-key.json'), 'PRIVATE');
   await assert.rejects(buildPublicSite(root), /Unsupported public asset type/);
 });
+
+test('the public stock-management page contains only a redirect and fallback to the protected admin', async () => {
+  const html = await readFile(new URL('../admin.html', import.meta.url), 'utf8');
+  assert.match(html, /http-equiv="refresh"\s+content="0;url=https:\/\/admin\.performancevehicles\.ie\/"/i);
+  assert.match(html, /href="https:\/\/admin\.performancevehicles\.ie\/"/);
+  assert.doesNotMatch(html, /<(?:script|form|input|textarea|select|iframe|object|embed)\b/i);
+  assert.doesNotMatch(html, /github-token|open-draft|car-form|admin\.js|admin\.css|api\.github\.com/i);
+});
