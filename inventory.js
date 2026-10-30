@@ -36,7 +36,7 @@ window.VEHICLES = [
   {
     "id": "lamborghini-svj",
     "make": "Lamborghini",
-    "model": "Aventador SVJ 63",
+    "model": "Aventador SVJ",
     "subtitle": "Grigio Adamas · Oro wheels",
     "image": "assets/aventador-svj-1.jpg",
     "images": [
@@ -47,7 +47,7 @@ window.VEHICLES = [
     ],
     "body": "Coupé",
     "credit": "Photos: Tristin McDonnell / Elite Cars Ireland, Fk Media and Finn Doyle",
-    "description": "The Aventador SVJ takes Lamborghini’s V12 supercar formula in a more focused direction. Its 6.5-litre engine, carbon-fibre chassis and extensive aerodynamic development combine with sharp bodywork and a commanding rear wing to create a car with a strong track influence.\n\nThe SVJ 63 pictured pairs Grigio Adamas bodywork with Oro wheels for a distinctive contrast. Broad proportions, prominent air intakes and a low driving position give it the presence associated with Lamborghini’s flagship models, with the V12 central to its character.",
+    "description": "The Aventador SVJ takes Lamborghini’s V12 supercar formula in a more focused direction. Its 6.5-litre engine, carbon-fibre chassis and extensive aerodynamic development combine with sharp bodywork and a commanding rear wing to create a car with a strong track influence.\n\nThe SVJ pictured pairs Grigio Adamas bodywork with Oro wheels for a distinctive contrast. Broad proportions, prominent air intakes and a low driving position give it the presence associated with Lamborghini’s flagship models, with the V12 central to its character.",
     "focus": "50% 61%"
   },
   {
