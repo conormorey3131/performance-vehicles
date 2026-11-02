@@ -427,7 +427,7 @@
   top: calc(62px + env(safe-area-inset-top));
   bottom: calc(94px + env(safe-area-inset-bottom));
 }
-.vehicle-viewer.gallery-zoomed .gallery-stage { display: block; overflow: auto; touch-action: pan-y pinch-zoom; }
+.vehicle-viewer.gallery-zoomed .gallery-stage { display: block; overflow: auto; touch-action: pan-x pan-y pinch-zoom; }
 .vehicle-viewer.gallery-zoomed .gallery-image-button {
   flex-shrink: 0;
   width: 165%;

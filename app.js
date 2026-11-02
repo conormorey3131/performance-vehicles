@@ -570,7 +570,7 @@
         facts.append(pair);
       });
       if (facts.children.length) copy.append(facts);
-      const notice = vehicle.status === 'sold' ? 'This car has been sold. Get in touch to discuss something similar.' : vehicle.status === 'reserved' ? 'This car is reserved. Please enquire for the latest availability.' : (!vehicle.status || vehicle.status === 'showcase') ? 'Photography showcase — availability and specification to be confirmed.' : '';
+      const notice = vehicle.status === 'sold' ? 'This car has been sold. Get in touch to discuss something similar.' : vehicle.status === 'reserved' ? 'This car is reserved. Please enquire for the latest availability.' : vehicle.status === 'showcase' ? 'Photography showcase — availability and specification to be confirmed.' : 'Please enquire for current availability and full specification.';
       if (notice) copy.append(element('p', 'detail-notice', notice));
       const actions = element('div', 'detail-actions');
       const enquire = element('button', 'button button-primary', vehicle.status === 'sold' ? 'Enquire about similar' : 'Enquire about this car');
