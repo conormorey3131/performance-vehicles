@@ -4,7 +4,9 @@
 - Private stock management: https://admin.performancevehicles.ie/
 - Location: Railway Road, Kilmallock, Co. Limerick, V35 TH92, Ireland.
 
-The public showroom includes the vehicle collection, search filters, saved favourites, supplied prices and a dark photo viewer with swipe navigation, thumbnails, zoom and slideshow controls. The website displays sales@performancevehicles.ie for sales enquiries. The owner must create and activate that separate mailbox before relying on email enquiries.
+The public showroom includes the vehicle collection, search filters, saved favourites, supplied prices and a dark photo viewer with swipe navigation, thumbnails, zoom and slideshow controls. The website uses sales@performancevehicles.ie for sales enquiries.
+
+The sales mailbox was created on Blacknight's Titan Email 5GB monthly plan on 2 November 2026. The domain's MX, SPF and DKIM records are configured in Cloudflare and verified by Titan. Sign in at https://app.titan.email/ using the full email address and the mailbox password chosen during setup. After setup or changes to mail settings, test sending and receiving a message and check the spam folder; DNS verification alone does not confirm delivery.
 
 ## Manage cars
 
