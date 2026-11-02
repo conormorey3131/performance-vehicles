@@ -22,9 +22,9 @@ Browser drafts belong to their hostname and device. Use **Download draft backup*
 
 ## Admin access and handover
 
-The current approved email is `conor@moreydigital.ie`. Configure that email in both the Cloudflare Access application’s Allow policy and the Worker’s comma-separated `ADMIN_EMAILS` setting. The application uses Cloudflare’s One-time PIN identity provider.
+The current approved email is `sales@performancevehicles.ie`. Configure that exact email in both the Cloudflare Access application’s Allow policy and the Worker’s comma-separated `ADMIN_EMAILS` setting. The application uses Cloudflare’s One-time PIN identity provider.
 
-To hand over access, add the new administrator’s email to both settings, verify that they can sign in, and remove access no longer needed. Administrators use their own email codes; there is no shared website password to distribute. Signing out uses Cloudflare Access’s logout route.
+To hand over access, first add the new administrator’s email to both settings while keeping the existing administrator approved. Verify a fresh sign-in with the new email and confirm that the stock loads. Then remove the old email from both settings and verify that its previous session can no longer access the editor. Administrators use their own email codes; there is no shared website password to distribute. Signing out uses Cloudflare Access’s logout route.
 
 Protect all traffic to the Worker. The deployment keeps `workers.dev` and preview URLs disabled. Its frontend is embedded directly in the Worker because the static-assets internal router does not propagate `ctx.access`. If verified runtime identity is missing, the Worker denies access.
 
