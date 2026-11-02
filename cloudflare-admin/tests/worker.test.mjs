@@ -83,6 +83,7 @@ test('the real repository client adds GitHub-required identity headers and never
   const calls = [];
   const source = `window.VEHICLES = ${JSON.stringify([car()])};`;
   const worker = createWorker({ fetchImpl: async (url, options) => {
+    if (options.redirect === 'error') throw new TypeError('Workers does not support the error redirect mode.');
     calls.push({ url: String(url), options });
     return Response.json({ type: 'file', encoding: 'base64', content: btoa(source), sha: SHA });
   } });
@@ -91,8 +92,25 @@ test('the real repository client adds GitHub-required identity headers and never
   assert.equal(calls[0].url, 'https://api.github.com/repos/conormorey3131/performance-vehicles/contents/inventory.js?ref=main');
   assert.equal(calls[0].options.headers.get('User-Agent'), 'Performance-Vehicles-Admin');
   assert.equal(calls[0].options.headers.get('Authorization'), `Bearer ${SECRET}`);
-  assert.equal(calls[0].options.redirect, 'error');
+  assert.equal(calls[0].options.redirect, 'manual');
   assert.equal((await response.text()).includes(SECRET), false);
+});
+
+test('unexpected GitHub redirects are rejected without sending credentials to another destination', async () => {
+  for (const status of [301, 302, 303, 307, 308]) {
+    const calls = [];
+    const worker = createWorker({ fetchImpl: async (url, options) => {
+      if (options.redirect === 'error') throw new TypeError('Workers does not support the error redirect mode.');
+      calls.push({ url: String(url), options });
+      return new Response(null, { status, headers: { Location: 'https://untrusted.example/collect' } });
+    } });
+    const response = await worker.fetch(request('/api/inventory'), env(), context());
+    assert.equal(response.status, 502);
+    assert.equal(calls.length, 1);
+    assert.equal(new URL(calls[0].url).origin, 'https://api.github.com');
+    assert.equal(calls[0].options.redirect, 'manual');
+    assert.equal((await response.text()).includes(SECRET), false);
+  }
 });
 
 test('a valid stock update uses the fixed repository client and returns the canonical public URL', async () => {

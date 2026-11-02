@@ -143,12 +143,14 @@ function protectedAsset(response, siteURL) {
 
 export function createWorker({ createRepositoryClient, fetchImpl = globalThis.fetch } = {}) {
   const makeClient = createRepositoryClient || (token => new RepositoryClient(token, {
-    fetchImpl(resource, options = {}) {
+    async fetchImpl(resource, options = {}) {
       const destination = new URL(resource);
       if (destination.origin !== 'https://api.github.com') throw new Error('Unsupported publishing destination.');
       const headers = new Headers(options.headers);
       headers.set('User-Agent', 'Performance-Vehicles-Admin');
-      return fetchImpl(destination, { ...options, headers, redirect: 'error' });
+      const response = await fetchImpl(destination, { ...options, headers, redirect: 'manual' });
+      if (response.status >= 300 && response.status < 400) throw new Error('GitHub returned an unexpected redirect.');
+      return response;
     }
   }));
   return {
