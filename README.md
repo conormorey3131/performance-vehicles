@@ -4,7 +4,7 @@
 - Private stock management: https://admin.performancevehicles.ie/
 - Location: Railway Road, Kilmallock, Co. Limerick, V35 TH92, Ireland.
 
-The public showroom includes the vehicle collection, search filters, saved favourites, supplied prices and a dark photo viewer with swipe navigation, thumbnails, zoom and slideshow controls. Sales enquiries use sales@performancevehicles.ie.
+The public showroom includes the vehicle collection, search filters, saved favourites, supplied prices and a dark photo viewer with swipe navigation, thumbnails, zoom and slideshow controls. The website displays sales@performancevehicles.ie for sales enquiries. The owner must create and activate that separate mailbox before relying on email enquiries.
 
 ## Manage cars
 
@@ -12,7 +12,9 @@ Bookmark the private stock-management address. Cloudflare Access sends a one-tim
 
 After signing in, add or edit a car, enter its description and euro price, upload and order photographs, choose a cover and set its status. **Save draft** keeps changes on the current device. **Publish changes** saves the stock and photographs together; GitHub Pages then rebuilds the public showroom. The editor checks for concurrent stock changes before publishing.
 
-Existing showcase vehicles have no invented prices or specifications. New listings start as drafts. Confirm their actual details before marking them available. Draft status hides a listing from the public catalogue; reserved and sold cars are labelled. Published inventory files and photographs are public, so listing fields should contain information intended for the public website.
+To add or change a price, open the car, untick **Price on request**, enter the amount in **Price (€)**, choose **Save draft**, then **Publish changes**. To show “Price on request” again, retick the checkbox, save the draft and publish.
+
+The current collection contains six cars offered for sale, with prices on request. New listings start as drafts. Confirm their actual details before marking them available. Draft status hides a listing from the public catalogue; reserved and sold cars are labelled. Published inventory files and photographs are public, so listing fields should contain information intended for the public website.
 
 Browser drafts belong to their hostname and device. Use **Download draft backup** and **Restore draft backup** to move saved work to another admin address or device.
 
