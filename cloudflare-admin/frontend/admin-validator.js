@@ -1,4 +1,5 @@
 const STATUSES = new Set(['showcase', 'draft', 'available', 'reserved', 'sold']);
+const CURRENCIES = new Set(['GBP', 'EUR']);
 
 export class PublishingError extends Error {
   constructor(message, code = 'PUBLISHING', details = {}) {
@@ -27,7 +28,10 @@ export function validateInventory(vehicles, uploads = {}) {
     if (!STATUSES.has(status)) throw new PublishingError(`${label}: choose a valid stock status.`, 'VALIDATION');
     for (const key of ['make', 'model']) if (typeof car[key] !== 'string' || !car[key].trim() || car[key].length > 150) throw new PublishingError(`${label}: add a ${key} (up to 150 characters).`, 'VALIDATION');
     if (typeof car.description !== 'string' || car.description.length > 10000 || (status !== 'draft' && !car.description.trim())) throw new PublishingError(`${label}: add a description before publishing it to the website.`, 'VALIDATION');
-    for (const key of ['priceEUR', 'mileageKm']) if (car[key] != null && (typeof car[key] !== 'number' || !Number.isFinite(car[key]) || car[key] < 0 || car[key] > 1000000000)) throw new PublishingError(`${label}: enter a valid ${key === 'priceEUR' ? 'price' : 'mileage'}.`, 'VALIDATION');
+    for (const key of ['price', 'priceEUR', 'mileageKm']) if (car[key] != null && (typeof car[key] !== 'number' || !Number.isFinite(car[key]) || car[key] < 0 || car[key] > 1000000000)) throw new PublishingError(`${label}: enter a valid ${key === 'mileageKm' ? 'mileage' : 'price'}.`, 'VALIDATION');
+    if (car.currency !== undefined && !CURRENCIES.has(car.currency)) throw new PublishingError(`${label}: choose pounds (GBP) or euro (EUR).`, 'VALIDATION');
+    if (car.price != null && !CURRENCIES.has(car.currency)) throw new PublishingError(`${label}: choose a currency for the price.`, 'VALIDATION');
+    if (car.priceEUR != null && (Object.hasOwn(car, 'price') || (car.currency !== undefined && car.currency !== 'EUR'))) throw new PublishingError(`${label}: the listing contains conflicting prices. Re-enter the amount and currency.`, 'VALIDATION');
     if (car.year != null && (!Number.isInteger(car.year) || car.year < 1886 || car.year > new Date().getFullYear() + 2)) throw new PublishingError(`${label}: enter a valid year.`, 'VALIDATION');
     const images = Array.isArray(car.images) ? car.images : [];
     if (images.length > 30 || (status !== 'draft' && !images.length)) throw new PublishingError(`${label}: add between 1 and 30 photos before showing it on the website.`, 'VALIDATION');

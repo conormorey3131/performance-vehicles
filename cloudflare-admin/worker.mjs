@@ -1,8 +1,8 @@
 import { PublishingError, RepositoryClient, validateInventory } from './lib/admin-publisher.js';
 
 export const LIMITS = Object.freeze({ requestBytes: 24 * 1024 * 1024, uploads: 30, photoBytes: 2 * 1024 * 1024, vehicles: 500 });
-const VEHICLE_FIELDS = new Set(['id', 'make', 'model', 'subtitle', 'description', 'image', 'images', 'body', 'credit', 'focus', 'status', 'priceEUR', 'year', 'mileageKm', 'fuel', 'transmission']);
-const TEXT_FIELDS = { id: 101, make: 150, model: 150, subtitle: 250, description: 10000, image: 500, body: 100, credit: 500, focus: 50, status: 20, fuel: 100, transmission: 100 };
+const VEHICLE_FIELDS = new Set(['id', 'make', 'model', 'subtitle', 'description', 'image', 'images', 'body', 'credit', 'focus', 'status', 'price', 'currency', 'priceEUR', 'year', 'mileageKm', 'fuel', 'transmission']);
+const TEXT_FIELDS = { id: 101, make: 150, model: 150, subtitle: 250, description: 10000, image: 500, body: 100, credit: 500, focus: 50, status: 20, currency: 3, fuel: 100, transmission: 100 };
 const UPLOAD_FIELDS = new Set(['id', 'dataUrl', 'name', 'width', 'height']);
 const JPEG_PREFIX = 'data:image/jpeg;base64,';
 const PUBLIC_IMAGE_PATH = /^\/assets\/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp|avif|svg)$/i;

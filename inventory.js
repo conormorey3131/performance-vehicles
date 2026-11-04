@@ -19,9 +19,10 @@ window.VEHICLES = [
     "fuel": "",
     "transmission": "",
     "status": "available",
-    "priceEUR": null,
     "year": null,
-    "mileageKm": null
+    "mileageKm": null,
+    "price": null,
+    "currency": "GBP"
   },
   {
     "id": "ferrari-488-pista",
@@ -41,9 +42,10 @@ window.VEHICLES = [
     "fuel": "",
     "transmission": "",
     "status": "available",
-    "priceEUR": null,
     "year": null,
-    "mileageKm": null
+    "mileageKm": null,
+    "price": null,
+    "currency": "GBP"
   },
   {
     "id": "lamborghini-svj",
@@ -64,9 +66,10 @@ window.VEHICLES = [
     "fuel": "",
     "transmission": "",
     "status": "available",
-    "priceEUR": null,
     "year": null,
-    "mileageKm": null
+    "mileageKm": null,
+    "price": null,
+    "currency": "GBP"
   },
   {
     "id": "mclaren-senna",
@@ -87,9 +90,10 @@ window.VEHICLES = [
     "fuel": "",
     "transmission": "",
     "status": "available",
-    "priceEUR": null,
     "year": null,
-    "mileageKm": null
+    "mileageKm": null,
+    "price": null,
+    "currency": "GBP"
   },
   {
     "id": "nissan-gtr",
@@ -109,9 +113,10 @@ window.VEHICLES = [
     "fuel": "",
     "transmission": "",
     "status": "available",
-    "priceEUR": null,
     "year": null,
-    "mileageKm": null
+    "mileageKm": null,
+    "price": null,
+    "currency": "GBP"
   },
   {
     "id": "mitsubishi-evo",
@@ -131,8 +136,9 @@ window.VEHICLES = [
     "fuel": "",
     "transmission": "",
     "status": "available",
-    "priceEUR": null,
     "year": null,
-    "mileageKm": null
+    "mileageKm": null,
+    "price": null,
+    "currency": "GBP"
   }
 ];

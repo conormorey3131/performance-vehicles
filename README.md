@@ -12,9 +12,9 @@ The sales mailbox was created on Blacknight's Titan Email 5GB monthly plan on 2 
 
 Bookmark the private stock-management address. Cloudflare Access sends a one-time sign-in code to an approved administrator’s email address. The Worker checks that identity and its own email allowlist before serving the editor, photographs or publishing API. The public `/admin.html` address forwards to this protected site.
 
-After signing in, add or edit a car, enter its description and euro price, upload and order photographs, choose a cover and set its status. **Save draft** keeps changes on the current device. **Publish changes** saves the stock and photographs together; GitHub Pages then rebuilds the public showroom. The editor checks for concurrent stock changes before publishing.
+After signing in, add or edit a car, enter its description and price, upload and order photographs, choose a cover and set its status. **Save draft** keeps changes on the current device. **Publish changes** saves the stock and photographs together; GitHub Pages then rebuilds the public showroom. The editor checks for concurrent stock changes before publishing.
 
-To add or change a price, open the car, untick **Price on request**, enter the amount in **Price (€)**, choose **Save draft**, then **Publish changes**. To show “Price on request” again, retick the checkbox, save the draft and publish.
+To add or change a price, open the car, select **GBP** for pounds or **EUR** for euro, untick **Price on request**, enter the amount, choose **Save draft**, then **Publish changes**. New cars default to pounds (£). The website shows each listing in its selected currency. Existing numeric euro prices retain their currency; no exchange-rate conversion is performed. To show “Price on request” again, retick the checkbox, save the draft and publish.
 
 The current collection contains six cars offered for sale, with prices on request. New listings start as drafts. Confirm their actual details before marking them available. Draft status hides a listing from the public catalogue; reserved and sold cars are labelled. Published inventory files and photographs are public, so listing fields should contain information intended for the public website.
 

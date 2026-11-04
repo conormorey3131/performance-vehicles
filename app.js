@@ -30,7 +30,10 @@
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const enquiryVehicles = vehicles.filter(vehicle => vehicle.status !== 'sold');
     const numberFormat = new Intl.NumberFormat('en-IE');
-    const priceFormat = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    const priceFormats = {
+      GBP: new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', minimumFractionDigits: 0, maximumFractionDigits: 2 }),
+      EUR: new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 2 })
+    };
 
     try {
       const stored = JSON.parse(localStorage.getItem('performance-vehicles-saved') || '[]');
@@ -85,9 +88,19 @@
     }
 
     function vehiclePrice(vehicle) {
-      const value = vehicle.priceEUR !== undefined ? vehicle.priceEUR : vehicle.price;
-      const numeric = numericValue(value);
-      return numeric !== null ? priceFormat.format(numeric) : (value !== undefined ? 'Price on request' : 'Enquire for details');
+      const hasPrice = Object.prototype.hasOwnProperty.call(vehicle, 'price');
+      const hasLegacyPrice = Object.prototype.hasOwnProperty.call(vehicle, 'priceEUR');
+      const hasCurrency = Object.prototype.hasOwnProperty.call(vehicle, 'currency');
+      const value = hasPrice ? vehicle.price : vehicle.priceEUR;
+      // A missing currency belongs to the original euro data format. Explicit,
+      // unsupported currencies never borrow a symbol or a legacy amount.
+      const currency = hasPrice && hasCurrency ? vehicle.currency : 'EUR';
+      const validCurrency = currency === 'GBP' || currency === 'EUR';
+      const numeric = typeof value === 'number' && Number.isFinite(value) && value >= 0;
+      return {
+        text: validCurrency && numeric ? priceFormats[currency].format(value) : (hasPrice || hasLegacyPrice ? 'Price on request' : 'Enquire for details'),
+        hasAmount: validCurrency && numeric
+      };
     }
 
     function statusLabel(vehicle) {
@@ -149,8 +162,9 @@
       if (numericValue(vehicle.year)) body.querySelector('.vehicle-title').prepend(element('span', 'vehicle-year', `${vehicle.year} `));
       body.append(element('p', 'vehicle-subtitle', vehicle.subtitle || vehicle.body || 'Performance collection'));
       const footer = element('div', 'vehicle-card-footer');
-      const price = element('span', 'vehicle-price', vehiclePrice(vehicle));
-      if (numericValue(vehicle.priceEUR ?? vehicle.price) !== null) price.classList.add('has-price');
+      const displayPrice = vehiclePrice(vehicle);
+      const price = element('span', 'vehicle-price', displayPrice.text);
+      if (displayPrice.hasAmount) price.classList.add('has-price');
       footer.append(price);
       const details = element('button', 'vehicle-detail-link', 'View car');
       details.type = 'button';
@@ -471,7 +485,7 @@
       if (statusLabel(vehicle)) headingCopy.append(element('p', `detail-status status-${vehicle.status}`, statusLabel(vehicle)));
       const headingPrice = element('div', 'detail-heading-price');
       if (numericValue(vehicle.year)) headingPrice.append(element('p', 'detail-year', String(vehicle.year)));
-      headingPrice.append(element('p', 'detail-price', vehiclePrice(vehicle)));
+      headingPrice.append(element('p', 'detail-price', vehiclePrice(vehicle).text));
       heading.append(headingCopy, headingPrice);
       const gallery = element('section', 'detail-gallery');
       gallery.setAttribute('aria-label', `${fullName(vehicle)} photographs`);

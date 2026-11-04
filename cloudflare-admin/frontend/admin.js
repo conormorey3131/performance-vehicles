@@ -5,7 +5,7 @@ const $ = id => document.getElementById(id);
 const clone = value => structuredClone(value);
 let seed = [];
 const state = { vehicles: clone(seed), baseVehicles: clone(seed), uploads: {}, baseSha: null, dirty: false, conflict: false, client: null, user: null, editing: null, editorDirty: false, isNew: false, busy: false, storageAvailable: true, publishingReady: false, publicSiteURL: 'https://performancevehicles.ie/' };
-const money = value => typeof value === 'number' ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value) : 'Price on request';
+const money = (value, currency = 'GBP') => typeof value === 'number' ? new Intl.NumberFormat(currency === 'GBP' ? 'en-GB' : 'en-IE', { style: 'currency', currency, minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value) : 'Price on request';
 const statusName = value => ({ available: 'Available', reserved: 'Reserved', sold: 'Sold', draft: 'Draft', showcase: 'Showcase' }[value] || 'Showcase');
 let dbPromise;
 let persistence = Promise.resolve();
@@ -19,6 +19,18 @@ function toast(text) { $('toast').textContent = text; $('toast').hidden = false;
 function imageURL(path) { return path?.startsWith('upload:') ? state.uploads[path.slice(7)]?.dataUrl || '' : path || ''; }
 function imageList(car) { return Array.isArray(car.images) ? car.images : car.image ? [car.image] : []; }
 function signature(vehicles) { return JSON.stringify(vehicles); }
+function normalizeVehiclePricing(car) {
+  const value = { ...car };
+  const hasPrice = Object.hasOwn(car, 'price');
+  const hasCurrency = Object.hasOwn(car, 'currency');
+  if (hasPrice && car.priceEUR != null) throw new Error(`${fullName(car)}: conflicting price fields. Keep only the intended price before restoring this stock.`);
+  if (!hasPrice && car.priceEUR != null && hasCurrency && car.currency !== 'EUR') throw new Error(`${fullName(car)}: a legacy euro price cannot use another currency. Check the amount and currency before restoring this stock.`);
+  value.price = hasPrice ? car.price : car.priceEUR ?? null;
+  value.currency = hasCurrency ? car.currency : value.price == null ? 'GBP' : 'EUR';
+  delete value.priceEUR;
+  return value;
+}
+function normalizeInventoryPricing(vehicles) { return vehicles.map(normalizeVehiclePricing); }
 
 function database() {
   if (!dbPromise) dbPromise = new Promise((resolve, reject) => {
@@ -93,21 +105,25 @@ async function bootstrap() {
     const session = await client.session();
     const remote = await client.load();
     if (!Array.isArray(remote.vehicles) || !remote.sha) throw new Error('The current stock could not be loaded. Try again shortly.');
+    const remoteVehicles = normalizeInventoryPricing(remote.vehicles);
+    validateInventory(remoteVehicles);
     const publicURL = new URL(session.publicSiteURL || state.publicSiteURL);
     if (publicURL.protocol !== 'https:') throw new Error('The public website address is not configured correctly.');
     state.client = client; state.user = session.user; state.publishingReady = session.publishingReady === true; state.publicSiteURL = publicURL.href;
     document.querySelectorAll('[data-public-site]').forEach(link => { link.href = publicURL.href; });
     $('logout-link').href = typeof session.logoutURL === 'string' && session.logoutURL.startsWith('/') && !session.logoutURL.startsWith('//') ? session.logoutURL : '/cdn-cgi/access/logout';
-    seed = clone(remote.vehicles);
+    seed = clone(remoteVehicles);
     let saved;
     try { saved = await readDraft(); } catch (_) { state.storageAvailable = false; }
     if (saved?.dirty === true && Array.isArray(saved.vehicles) && Array.isArray(saved.baseVehicles)) {
-      state.vehicles = saved.vehicles; state.baseVehicles = saved.baseVehicles; state.uploads = saved.uploads || {}; state.baseSha = saved.baseSha || null; state.dirty = true;
-      const sameBase = state.baseSha ? state.baseSha === remote.sha : signature(state.baseVehicles) === signature(remote.vehicles);
+      const savedVehicles = normalizeInventoryPricing(saved.vehicles);
+      validateInventory(savedVehicles, saved.uploads || {});
+      state.vehicles = savedVehicles; state.baseVehicles = normalizeInventoryPricing(saved.baseVehicles); state.uploads = saved.uploads || {}; state.baseSha = saved.baseSha || null; state.dirty = true;
+      const sameBase = state.baseSha ? state.baseSha === remote.sha : signature(state.baseVehicles) === signature(remoteVehicles);
       state.conflict = !sameBase;
-      if (sameBase) { state.baseSha = remote.sha; state.baseVehicles = clone(remote.vehicles); }
+      if (sameBase) { state.baseSha = remote.sha; state.baseVehicles = clone(remoteVehicles); }
     } else {
-      state.vehicles = clone(remote.vehicles); state.baseVehicles = clone(remote.vehicles); state.baseSha = remote.sha; state.uploads = {}; state.dirty = false; state.conflict = false;
+      state.vehicles = clone(remoteVehicles); state.baseVehicles = clone(remoteVehicles); state.baseSha = remote.sha; state.uploads = {}; state.dirty = false; state.conflict = false;
     }
     openWorkspace();
     showMessage('workspace-message', state.conflict ? 'A saved draft was restored, but the published stock has changed. Download a backup if needed, then reload published stock before publishing.' : state.dirty ? 'Your saved draft has been restored on this device.' : !state.publishingReady ? 'Publishing has not been enabled yet. Ask the site owner to complete the connection before publishing changes.' : '', state.conflict ? 'error' : 'info');
@@ -126,7 +142,7 @@ function renderStock() {
     const row = node('article', 'stock-row');
     const img = node('img', 'stock-row-image'); img.src = imageURL(imageList(car)[0]); img.alt = fullName(car); img.loading = 'lazy'; if (!img.src || !imageList(car).length) { img.removeAttribute('src'); img.alt = 'No photo yet'; }
     const title = node('div'); title.append(node('h3', 'stock-row-title', fullName(car)), node('p', 'stock-row-meta', [car.year, car.body, `${imageList(car).length} photos`].filter(Boolean).join(' · ')));
-    const price = node('div', 'stock-row-price', money(car.priceEUR)); price.append(node('small', '', car.status === 'draft' ? 'Hidden from website' : 'Shown on website'));
+    const price = node('div', 'stock-row-price', money(car.price, car.currency)); price.append(node('small', '', car.status === 'draft' ? 'Hidden from website' : 'Shown on website'));
     const badge = node('span', `badge badge-${car.status || 'showcase'}`, statusName(car.status));
     const edit = node('button', 'stock-row-edit', 'Edit ↗'); edit.type = 'button'; edit.setAttribute('aria-label', `Edit ${fullName(car)}`); edit.addEventListener('click', () => openEditor(car.id));
     row.append(img, title, price, badge, edit); list.append(row);
@@ -159,14 +175,15 @@ async function openEditor(id = null) {
   if (state.editing && !await discardEditor()) return;
   const existing = state.vehicles.find(car => car.id === id);
   state.isNew = !existing;
-  state.editing = existing ? clone(existing) : { id: `car-${crypto.randomUUID()}`, make: '', model: '', subtitle: '', body: '', description: '', priceEUR: null, year: null, mileageKm: null, fuel: '', transmission: '', status: 'draft', image: '', images: [], credit: 'Performance Vehicles collection', focus: '50% 50%' };
+  state.editing = existing ? normalizeVehiclePricing(clone(existing)) : { id: `car-${crypto.randomUUID()}`, make: '', model: '', subtitle: '', body: '', description: '', price: null, currency: 'GBP', year: null, mileageKm: null, fuel: '', transmission: '', status: 'draft', image: '', images: [], credit: 'Performance Vehicles collection', focus: '50% 50%' };
   state.editing.images = clone(imageList(state.editing));
   const car = state.editing;
   $('car-form').reset();
-  for (const [field, key] of [['make', 'make'], ['model', 'model'], ['subtitle', 'subtitle'], ['description', 'description'], ['price', 'priceEUR'], ['year', 'year'], ['mileage', 'mileageKm']]) $(`car-${field}`).value = car[key] ?? '';
+  for (const [field, key] of [['make', 'make'], ['model', 'model'], ['subtitle', 'subtitle'], ['description', 'description'], ['price', 'price'], ['year', 'year'], ['mileage', 'mileageKm']]) $(`car-${field}`).value = car[key] ?? '';
   for (const key of ['body', 'fuel', 'transmission']) setSelect(`car-${key}`, car[key] || '');
+  $('car-currency').value = car.currency;
   $('car-status').value = car.status || 'showcase';
-  $('car-price-request').checked = car.priceEUR == null;
+  $('car-price-request').checked = car.price == null;
   $('car-year').max = String(new Date().getFullYear() + 2);
   updatePriceInput();
   $('editor-heading').textContent = state.isNew ? 'Add a car' : fullName(car);
@@ -179,19 +196,27 @@ async function openEditor(id = null) {
 function readEditor() {
   const car = clone(state.editing);
   for (const key of ['make', 'model', 'subtitle', 'body', 'description', 'fuel', 'transmission', 'status']) car[key] = $(`car-${key}`).value.trim();
-  car.priceEUR = $('car-price-request').checked || $('car-price').value === '' ? null : Number($('car-price').value);
+  car.price = $('car-price-request').checked || $('car-price').value === '' ? null : Number($('car-price').value);
+  car.currency = $('car-currency').value;
+  delete car.priceEUR;
   car.year = $('car-year').value === '' ? null : Number($('car-year').value);
   car.mileageKm = $('car-mileage').value === '' ? null : Number($('car-mileage').value);
   car.image = car.images[0] || '';
   return car;
 }
-function updatePriceInput() { $('car-price').disabled = $('car-price-request').checked; $('car-price').required = !$('car-price-request').checked; }
+function updatePriceInput() {
+  const pounds = $('car-currency').value === 'GBP';
+  $('car-price-label').textContent = `Price (${pounds ? '£' : '€'})`;
+  $('price-request-help').textContent = `Untick to enter a price in ${pounds ? 'pounds' : 'euro'}.`;
+  $('car-price').disabled = $('car-price-request').checked;
+  $('car-price').required = !$('car-price-request').checked;
+}
 function updatePreview() {
   if (!state.editing) return;
   const car = readEditor(); const photo = $('preview-photo'); photo.replaceChildren();
   if (car.images.length) { const img = node('img'); img.src = imageURL(car.images[0]); img.alt = fullName(car); photo.append(img); } else photo.append(node('span', '', 'Your cover photo'));
   $('preview-make').textContent = car.make || 'MAKE'; $('preview-title').textContent = car.model || 'Your next listing'; $('preview-subtitle').textContent = car.subtitle;
-  $('preview-price').textContent = money(car.priceEUR); $('preview-status').textContent = statusName(car.status); $('preview-status').className = `badge badge-${car.status}`;
+  $('preview-price').textContent = money(car.price, car.currency); $('preview-status').textContent = statusName(car.status); $('preview-status').className = `badge badge-${car.status}`;
 }
 function renderPhotos() {
   const list = $('photo-list'); list.replaceChildren();
@@ -254,7 +279,7 @@ async function reloadStock() {
   if ((state.dirty || state.editorDirty) && !await confirmAction({ title: 'Replace this draft?', message: 'This device’s draft will be replaced with the current published stock. Download a draft backup first if you want to keep your edits.', confirmLabel: 'Replace draft', danger: true })) return;
   lock(true);
   try {
-    const remote = await state.client.load(); seed = clone(remote.vehicles); state.vehicles = clone(remote.vehicles); state.baseVehicles = clone(remote.vehicles); state.baseSha = remote.sha; state.uploads = {}; state.dirty = false; state.conflict = false; state.editorDirty = false;
+    const remote = await state.client.load(); const vehicles = normalizeInventoryPricing(remote.vehicles); validateInventory(vehicles); seed = clone(vehicles); state.vehicles = clone(vehicles); state.baseVehicles = clone(vehicles); state.baseSha = remote.sha; state.uploads = {}; state.dirty = false; state.conflict = false; state.editorDirty = false;
     await persist(); if (state.editing) await discardEditor({ force: true }); renderStock(); showMessage('workspace-message', state.storageAvailable ? 'Published stock loaded. This workspace is up to date.' : 'Published stock loaded in this tab. Browser draft storage is unavailable, so download a backup before leaving.', state.storageAvailable ? '' : 'error');
   } catch (error) { handleRequestError(error); }
   finally { lock(false); }
@@ -274,9 +299,10 @@ async function restoreBackup(event) {
     let value;
     try { value = JSON.parse(await file.text()); } catch (_) { throw new Error('This file is not a readable draft backup. Choose the JSON file downloaded from stock management.'); }
     if (value?.format !== 'performance-vehicles-draft-v1' || !Array.isArray(value.vehicles) || !value.uploads || typeof value.uploads !== 'object' || Array.isArray(value.uploads)) throw new Error('Choose a Performance Vehicles draft backup file.');
-    validateInventory(value.vehicles, value.uploads);
+    const vehicles = normalizeInventoryPricing(value.vehicles);
+    validateInventory(vehicles, value.uploads);
     if (!await confirmAction({ title: 'Restore this draft?', message: `${value.vehicles.length} listings from the backup will replace this device’s draft. The public website changes only after you publish.`, confirmLabel: 'Restore draft', cancelLabel: 'Keep current draft' })) return;
-    state.vehicles = clone(value.vehicles); state.uploads = clone(value.uploads); state.dirty = true; state.conflict = false; state.editorDirty = false;
+    state.vehicles = clone(vehicles); state.uploads = clone(value.uploads); state.dirty = true; state.conflict = false; state.editorDirty = false;
     pruneUploads(); await persist(); if (state.editing) await discardEditor({ force: true }); renderStock();
     showMessage('workspace-message', state.storageAvailable ? 'Draft backup restored on this device. Review the listings before publishing.' : 'The backup was restored in this tab, but browser storage is unavailable. Keep your original backup file.', state.storageAvailable ? 'info' : 'error');
   } catch (error) { showMessage('workspace-message', error.message || 'The draft backup could not be restored.', 'error'); }
@@ -293,7 +319,7 @@ function requestPublish() {
   if (!state.client) { requireSignIn(); return; }
   if (!state.dirty || state.busy || state.conflict || !state.publishingReady) return;
   if (state.editorDirty) { showMessage('workspace-message', 'Save the listing you are editing before publishing the stock update.', 'error'); return; }
-  try { validateInventory(state.vehicles, state.uploads); validatePublishSize(); } catch (error) { showMessage('workspace-message', error.message, 'error'); return; }
+  try { const vehicles = normalizeInventoryPricing(state.vehicles); validateInventory(vehicles, state.uploads); state.vehicles = vehicles; validatePublishSize(); } catch (error) { showMessage('workspace-message', error.message, 'error'); return; }
   const publicCars = state.vehicles.filter(car => car.status !== 'draft').length;
   const photos = new Set(state.vehicles.flatMap(car => imageList(car)).filter(path => path.startsWith('upload:'))).size;
   $('publish-summary').textContent = `${publicCars} ${publicCars === 1 ? 'listing will' : 'listings will'} be visible on the website. ${state.vehicles.length - publicCars} draft ${state.vehicles.length - publicCars === 1 ? 'listing stays' : 'listings stay'} hidden. ${photos} new ${photos === 1 ? 'photo' : 'photos'} will be uploaded.`;
@@ -303,8 +329,11 @@ async function publish() {
   if (state.busy || !state.client || !state.publishingReady || state.conflict || !state.dirty) return;
   lock(true);
   try {
-    const result = await state.client.publish({ vehicles: state.vehicles, uploads: state.uploads, expectedSha: state.baseSha });
-    state.vehicles = clone(result.vehicles); state.baseVehicles = clone(result.vehicles); state.baseSha = result.sha; state.uploads = {}; state.dirty = false; state.conflict = false; state.editorDirty = false; await persist();
+    const vehicles = normalizeInventoryPricing(state.vehicles);
+    validateInventory(vehicles, state.uploads);
+    const result = await state.client.publish({ vehicles, uploads: state.uploads, expectedSha: state.baseSha });
+    const publishedVehicles = normalizeInventoryPricing(result.vehicles);
+    state.vehicles = clone(publishedVehicles); state.baseVehicles = clone(publishedVehicles); state.baseSha = result.sha; state.uploads = {}; state.dirty = false; state.conflict = false; state.editorDirty = false; await persist();
     if (state.editing) await discardEditor({ force: true }); renderStock(); $('publish-dialog').close();
     showMessage('workspace-message', 'Stock saved. The public website is being updated and may take a few minutes to show the changes.');
     const link = node('a', '', ' View public website ↗'); link.href = result.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; $('workspace-message').append(link); toast('Stock update saved.');
@@ -321,8 +350,8 @@ $('new-car').addEventListener('click', () => openEditor());
 $('editor-back').addEventListener('click', () => discardEditor()); $('cancel-editor').addEventListener('click', () => discardEditor());
 $('stock-nav').addEventListener('click', async () => { if (!state.editing || await discardEditor()) $('stock-panel').hidden = false; });
 $('car-form').addEventListener('submit', saveEditor);
-$('car-form').addEventListener('input', event => { if (!state.editing || event.target.type === 'file') return; state.editorDirty = true; if (event.target.id === 'car-price-request') updatePriceInput(); updatePreview(); });
-$('car-form').addEventListener('change', event => { if (!state.editing || event.target.type === 'file') return; state.editorDirty = true; if (event.target.id === 'car-price-request') updatePriceInput(); updatePreview(); });
+$('car-form').addEventListener('input', event => { if (!state.editing || event.target.type === 'file') return; state.editorDirty = true; if (['car-price-request', 'car-currency'].includes(event.target.id)) updatePriceInput(); updatePreview(); });
+$('car-form').addEventListener('change', event => { if (!state.editing || event.target.type === 'file') return; state.editorDirty = true; if (['car-price-request', 'car-currency'].includes(event.target.id)) updatePriceInput(); updatePreview(); });
 $('car-photos').addEventListener('change', event => addPhotos([...event.target.files]));
 for (const name of ['dragenter', 'dragover']) $('photo-drop').addEventListener(name, event => { event.preventDefault(); $('photo-drop').classList.add('is-over'); });
 for (const name of ['dragleave', 'drop']) $('photo-drop').addEventListener(name, event => { event.preventDefault(); $('photo-drop').classList.remove('is-over'); });
